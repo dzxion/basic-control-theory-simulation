@@ -14,15 +14,22 @@ GT = TD*G0;
 G0f = Gf*G0;
 P1 = 987/(s^2+75.4*s+987);
 P2 = (1421/(s^2+67.86*s+1421))*((0.01*s+1)/(0.03*s+1))*(1/(0.035*s+1));
-% [A,B,C,D] = tf2ss(987,[1,75.4,987])
-% ssP2 = tf2ss(P2)
+[A,B,C,D] = tf2ss(246.7,[1,15.71,246.7])
 G1 = 1/(0.1*s+1);
 % [A,B,C,D] = tf2ss(1,[0.1,1]);
-ninfG0 = hinfnorm(G0);
+ninfG0 = hinfnorm(G0)
 ninfGT = hinfnorm(GT);
 ninfG0f = hinfnorm(G0f);
-A = [0,1;-10,-10]
-eig(A)
+% A = [0,1;-10,-15];
+% B = [0;10];
+% C = [1,0];
+% D = 0;
+% sysss = ss(A,B,C,D)
+% [b,a] = ss2tf(A,B,C,D)
+% eig(A)
+% step(sysss)
+% bode(sysss)
+% hinfnorm(sysss)
 
 % bode(L1);
 % bode(L2);
@@ -54,15 +61,15 @@ eig(A)
 % legend('TD');
 % grid;
 % 
-% figure;
-% bode(G0,GT,G0f,w);
-% legend('G0','GT','G0f');
-% grid;
-% % 
-% figure;
-% step(G0,GT,G0f);
-% legend('G0','GT','G0f');
-% grid;
+figure;
+bode(G0,GT,G0f,w);
+legend('G0','GT','G0f');
+grid;
+% 
+figure;
+step(G0,GT,G0f);
+legend('G0','GT','G0f');
+grid;
 
 % figure;
 % bode(P1,P2);
