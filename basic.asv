@@ -1,8 +1,8 @@
 close all
+clear
 
 s = tf('s');
 w = {0.1,100};
-syms k1 k2;
 
 % L1 = 3/(s*(0.1*s+1));
 % L2 = L1*(355/(s^2+1.1*s+355));
@@ -23,10 +23,14 @@ syms k1 k2;
 % ninfGT = hinfnorm(GT);
 % ninfG0f = hinfnorm(G0f);
 
-k1 = 246.7;
-k2 = 15.71;
-A = [0,1;-k1,-k2];
-B = [0;k1];
+f = 30;
+ksi = 0.1;
+wd = 2*pi*f;
+wn = wd/((1-ksi^2)^0.5);
+G4 = wn^2/(s^2+2*ksi*wn*s+wn^2);
+
+A = [0,1;-246.7,-15.71];
+B = [0;246.7];
 C = [1,0];
 D = 0;
 sys1 = ss(A,B,C,D)
@@ -34,21 +38,28 @@ sys1 = ss(A,B,C,D)
 eig1 = eig(A)
 hinfnorm1 = hinfnorm(sys1)
 
-% A = [0,1;-10,-15];
-% B = [0;10];
-% C = [1,0];
-% D = 0;
-k1 = 10;
-k2 = 15;
+A = [0,1;-10,-15];
+B = [0;10];
+C = [1,0];
+D = 0;
 sys2 = ss(A,B,C,D)
 [b,a] = ss2tf(A,B,C,D)
 eig2 = eig(A)
 hinfnorm2 = hinfnorm(sys2)
 
+A = [0,1;-987,-75.4];
+B = [0;987];
+C = [1,0];
+D = 0;
+sys3 = ss(A,B,C,D)
+[b,a] = ss2tf(A,B,C,D)
+eig3 = eig(A)
+hinfnorm3 = hinfnorm(sys3)
+
 figure
-step(sys1,sys2)
+step(sys1,sys2,sys3)
 figure
-bode(sys1,sys2)
+bode(sys1,sys2,sys3)
 
 % bode(L1);
 % bode(L2);
