@@ -18,7 +18,6 @@ s = tf('s');
 w = {0.1,100};
 syms k
 
-% some practice
 % L1 = 3/(s*(0.1*s+1));
 % L2 = L1*(355/(s^2+1.1*s+355));
 % C = 1*s^0;
@@ -69,6 +68,8 @@ syms k
 % sys4 = ss(A,B,C,D)
 % [b,a] = ss2tf(A,B,C,D)
 
+sys1 = 1/s;
+
 % cascade lead compensator
 % G0 = 10/(s*(s+1));
 % Gc = (1+0.456*s)/(1+0.114*s);
@@ -80,12 +81,12 @@ syms k
 % C = [1];
 % D = 0;
 % 
-% k = 1;
+% k = 10;
 % A = [-k];
-% B = [k];
+% B = [1];
 % sys1 = ss(A,B,C,D);
 
-% k = 5;
+% k = 10;
 % A = [-k];
 % B = [k];
 % sys2 = ss(A,B,C,D);
@@ -105,16 +106,24 @@ syms k
 % linearSystemAnalyzer(sys1)
 
 % second order open loop system
-k = 2;
-A = [0 1;-k^2 -2*k];
-B = [0;0];
-C = [0 1];
-D = 0;
-sys2 = ss(A,B,C,D);
+% k = 2;
+% A = [0 1;-k^2 -2*k];
+% B = [0;0];
+% C = [0 1];
+% D = 0;
+% sys2 = ss(A,B,C,D);
+% 
+% A = [0 1;0 0];
+% B = [0;1];
+% C = [1 0];
+% D = 0;
+% sys3 = ss(A,B,C,D);
 
-A = [0 1;-1 -k];
-B = [0;0];
-C = [0 1];
-D = 0;
-sys3 = ss(A,B,C,D);
+% non-minimun system
+% A = [1 1 0;0 0 1;0 0 0];
+% B = [0;0;1];
+% C = [0 1 0];
+% D = 0;
+% sys3 = ss(A,B,C,D);
+% [b,a] = ss2tf(A,B,C,D)
 
