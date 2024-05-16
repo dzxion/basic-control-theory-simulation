@@ -15,3 +15,10 @@ CL0.OutputName = 'y';
 Rtrack = TuningGoal.Tracking('r','y',1,0.01);
 Rreject = TuningGoal.Gain('d1','y',0.1);
 [CL,fSoft] = systune(CL0,[Rtrack,Rreject]);
+figure
+stepplot(CL);
+CLdist = getIOTransfer(CL,'d1','y');
+figure
+stepplot(CLdist);
+figure
+viewGoal([Rtrack,Rreject],CL);
