@@ -42,7 +42,7 @@ st0 = slTuner(mdl,"C1");
 addPoint(st0,["r","e","u","y","d","n"]);
 Rtrack = TuningGoal.StepTracking('r','y',0.05);
 % Rreject = TuningGoal.StepRejection('d','e',0.25,5);
-tf(Rtrack.ReferenceModel)
+% tf(Rtrack.ReferenceModel)
 % tf(Rreject.ReferenceModel)
 % [st,fSoft] = systune(st0,[Rtrack,Rreject]);
 [st,fSoft] = systune(st0,[Rtrack]);
@@ -50,21 +50,29 @@ tf(Rtrack.ReferenceModel)
 
 CL = getIOTransfer(st,"r","y");
 tf(CL)
+% figure
+% stepplot(CL);
 figure
-stepplot(CL);
+bodeplot(CL);
 CLd2e = getIOTransfer(st,'d','e');
 tf(CLd2e)
+% figure
+% stepplot(CLd2e);
 figure
-stepplot(CLd2e);
+bodeplot(CLd2e);
 CLr2e = getIOTransfer(st,'r','e');
+% figure
+% stepplot(CLr2e);
 figure
-stepplot(CLr2e);
+bodeplot(CLr2e);
 CLn2e = getIOTransfer(st,'n','e');
 tf(CLn2e)
+% figure
+% stepplot(CLn2e);
 figure
-stepplot(CLn2e);
-figure
-viewGoal([Rtrack],st);
+bodeplot(CLn2e);
+% figure
+% viewGoal([Rtrack],st);
 % figure
 % viewGoal([Rreject],st);
 showTunable(st);
