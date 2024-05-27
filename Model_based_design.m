@@ -38,9 +38,9 @@ s = tf('s');
 %% slTuner
 mdl = "simple_model";
 open_system(mdl)
-st0 = slTuner(mdl,"C1");
-addPoint(st0,["r","e","u","y","d","n"]);
-Rtrack = TuningGoal.StepTracking('r','y',0.05);
+st0 = slTuner(mdl,["C1","C2"]);
+addPoint(st0,["r","p","d","n_p","e_1"]);
+Rtrack = TuningGoal.StepTracking('r','p',0.05);
 % Rreject = TuningGoal.StepRejection('d','e',0.25,5);
 % tf(Rtrack.ReferenceModel)
 % tf(Rreject.ReferenceModel)
@@ -48,24 +48,24 @@ Rtrack = TuningGoal.StepTracking('r','y',0.05);
 [st,fSoft] = systune(st0,[Rtrack]);
 % [st,fSoft] = systune(st0,[Rreject]);
 
-CL = getIOTransfer(st,"r","y");
+CL = getIOTransfer(st,"r","p");
 tf(CL)
 % figure
 % stepplot(CL);
 figure
 bodeplot(CL);
-CLd2e = getIOTransfer(st,'d','e');
+CLd2e = getIOTransfer(st,'d','e_1');
 tf(CLd2e)
 % figure
 % stepplot(CLd2e);
 figure
 bodeplot(CLd2e);
-CLr2e = getIOTransfer(st,'r','e');
+CLr2e = getIOTransfer(st,'r','e_1');
 % figure
 % stepplot(CLr2e);
 figure
 bodeplot(CLr2e);
-CLn2e = getIOTransfer(st,'n','e');
+CLn2e = getIOTransfer(st,'n_p','e_1');
 tf(CLn2e)
 % figure
 % stepplot(CLn2e);
