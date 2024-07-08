@@ -3,6 +3,7 @@ clear
 clc
 
 %% some function
+syms s1
 % fplot(@(x) 20*log10(x))
 % f1 = @(x) 10*exp(-10*x);
 % f2 = @(x) 1*exp(-10*x);
@@ -12,6 +13,7 @@ clc
 % fplot(@(x) 5*exp(-1*x),[0 5])
 % hold on
 % fplot(@(x) 1*exp(-1*x),[0 5])
+expand((s1+1.367)^2)
 
 %% transfer function
 s = tf('s');

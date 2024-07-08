@@ -36,7 +36,7 @@ s = tf('s');
 % showTunable(CL);
 
 %% slTuner
-mdl = "simple_model";
+mdl = "second_order_system";
 open_system(mdl)
 st0 = slTuner(mdl,["C1","C2"]);
 addPoint(st0,["r","p","d","n_p","e_1"]);
