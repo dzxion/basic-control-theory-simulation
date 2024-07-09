@@ -2,6 +2,7 @@ close all
 clear
 clc
 
+s = tf('s');
 % System parameters
 m = 4;				% mass of aircraft
 J = 0.0475;			% inertia around pitch axis
@@ -25,8 +26,9 @@ Pi = tf([r], [J, 0, 0]);	% inner loop (roll)
 
 % Design a simple lead controller for the system
 k = 200;  a = 2;  b = 50;
-Ci = k*tf([1, a], [1, b]);		% lead compensator
-Li = Pi*Ci;
+Ci1 = k*tf([1, a], [1, b]);		% lead compensator
+Li1 = Pi*Ci1;
+
 
 % % Bode plot for the open loop process
 % figure(1); 
@@ -38,14 +40,19 @@ Li = Pi*Ci;
 
 % Compute out the gain and phase margins
 %! Not implemented
-[gm, pm, wcg, wcp] = margin(Li);
+[gm, pm, wcg, wcp] = margin(Li1);
 
 % Compute the sensitivity and complementary sensitivity functions
-Si = feedback(1, Li);
-Ti = Li * Si
+Si1 = feedback(1, Li1);
+Ti1 = Li1 * Si1
+
+% Design a PD controller for the system
+k1 = 1000;k2 = 100;
+Ti2 = tf([r/J*k1], [1, r/J*k2, r/J*k1])
 
 % Check to make sure that the specification is met
 % figure(3);  
 % bode(Si);
-figure;  
-bode(Ti);
+% figure;  
+% bode(Ti1,Ti2);
+% legend('lead','pd');
