@@ -28,13 +28,13 @@ k = 200;  a = 2;  b = 50;
 Ci = k*tf([1, a], [1, b]);		% lead compensator
 Li = Pi*Ci;
 
-% Bode plot for the open loop process
-figure(1); 
-bode(Pi);
-
-% Bode plot for the loop transfer function, with margins
-figure(2); 
-bode(Li);
+% % Bode plot for the open loop process
+% figure(1); 
+% bode(Pi);
+% 
+% % Bode plot for the loop transfer function, with margins
+% figure(2); 
+% bode(Li);
 
 % Compute out the gain and phase margins
 %! Not implemented
@@ -42,10 +42,10 @@ bode(Li);
 
 % Compute the sensitivity and complementary sensitivity functions
 Si = feedback(1, Li);
-Ti = Li * Si;
+Ti = Li * Si
 
 % Check to make sure that the specification is met
-figure(3);  
-bode(Si);
-figure(4);  
+% figure(3);  
+% bode(Si);
+figure;  
 bode(Ti);
