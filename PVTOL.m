@@ -27,7 +27,7 @@ Pi = tf([r], [J, 0, 0]);	% inner loop (roll)
 % Design a simple lead controller for the system
 k = 200;  a = 2;  b = 50;
 Ci1 = k*tf([1, a], [1, b]);		% lead compensator
-Li1 = Pi*Ci1;
+Li1 = Ci1*Pi;
 
 
 % % Bode plot for the open loop process
@@ -40,11 +40,11 @@ Li1 = Pi*Ci1;
 
 % Compute out the gain and phase margins
 %! Not implemented
-[gm, pm, wcg, wcp] = margin(Li1);
+[gm, pm, wcg, wcp] = margin(Li1)
 
 % Compute the sensitivity and complementary sensitivity functions
 Si1 = feedback(1, Li1);
-Ti1 = Li1 * Si1
+Ti1 = feedback(Li1, 1)
 
 % Design a PD controller for the system
 k1 = 1000;k2 = 100;
