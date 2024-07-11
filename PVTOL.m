@@ -56,3 +56,10 @@ Ti2 = tf([r/J*k1], [1, r/J*k2, r/J*k1])
 % figure;  
 % bode(Ti1,Ti2);
 % legend('lead','pd');
+
+% simple loop function
+k = 10;
+Li3 = k/s;
+Ti3 = feedback(Li3, 1)
+
+[gm, pm, wcg, wcp] = margin(Li3)
