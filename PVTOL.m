@@ -63,3 +63,4 @@ Li3 = k/s;
 Ti3 = feedback(Li3, 1)
 
 [gm, pm, wcg, wcp] = margin(Li3)
+nyquist(Li3)
