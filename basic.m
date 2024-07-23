@@ -80,8 +80,8 @@ sys1 = 1/s;
 %% state space
 % first order close loop system 
 % error system
-% C = [1];
-% D = 0;
+C = [1];
+D = 0;
 % 
 % k = 10;
 % A = [-k];
@@ -93,10 +93,11 @@ sys1 = 1/s;
 % B = [k];
 % sys2 = ss(A,B,C,D);
 % 
-% k = 10;
-% A = [-k];
-% B = [k];
-% sys3 = ss(A,B,C,D);
+k = 10;
+A = [-k];
+B = [-k];
+sys3 = ss(A,B,C,D);
+step(sys3)
 % 
 % k = 15;
 % A = [-k];
