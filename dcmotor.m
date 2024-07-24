@@ -15,9 +15,12 @@ C = [1 0];
 D = [0];
 sys_dc = ss(A,B,C,D);
 sys_tf = tf(sys_dc)
-eig(A)
-
-Kp = 100;
-A_e = [-Kf/J Km/J; -Kb/L-Kp/L -R/L];
-eig(A_e)
+% eig(A)
+% 
+% Kp = 100;
+% Ki = 10;
+% A_e_p = [-Kf/J Km/J; -Kb/L-Kp/L -R/L];
+% eig(A_e_p)
+% A_e_pi = [-Kf/J Km/J 0;-Kb/L-Kp/L -R/L -Ki;1 0 0];
+% eig(A_e_pi)
 
