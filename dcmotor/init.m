@@ -1,5 +1,5 @@
-clear
-clc
+% clear
+% clc
 
 pa.L = 0.5;
 pa.R = 2.0;
