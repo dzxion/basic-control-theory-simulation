@@ -4,6 +4,13 @@ clc
 
 %% some function
 syms s1
+fplot(@(x) sin(x))
+hold on
+theta = deg2rad(60)
+fplot(@(x) sin(x-theta))
+
+atan2(1,0)
+
 % fplot(@(x) 20*log10(x))
 % f1 = @(x) 10*exp(-10*x);
 % f2 = @(x) 1*exp(-10*x);
@@ -93,11 +100,11 @@ D = 0;
 % B = [k];
 % sys2 = ss(A,B,C,D);
 % 
-k = 10;
-A = [-k];
-B = [-k];
-sys3 = ss(A,B,C,D);
-step(sys3)
+% k = 10;
+% A = [-k];
+% B = [-k];
+% sys3 = ss(A,B,C,D);
+% step(sys3)
 % 
 % k = 15;
 % A = [-k];
