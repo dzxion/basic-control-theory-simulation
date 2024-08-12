@@ -36,12 +36,14 @@ clc
 %% sl_dcmotor_cascade_adrc_pid
 mdl = "sl_dcmotor_cascade_adrc_pid";
 open_system(mdl)
-st0 = slTuner(mdl,["P1","C2"]);
+st0 = slTuner(mdl,["C1","C2","C3"]);
 addPoint(st0,["r","w","u","w_f","e_w","i_f","e_i"]);
 
-wc = realp('wc', 1);               % controller bandwidth
-G = tunableGain('P1',2*pi*wc);
-setBlockParam(st0,'P1',G)   % use Fro to parameterize "RollOff" block
+wc = realp('wc', 1);% controller bandwidth
+b0 = realp('b0', 1);  
+kp = 2*pi*wc;
+setBlockParam(st0,'C1',kp);
+setBlockParam(st0,'C3',1/b0);
 
 Req1 = TuningGoal.Tracking('r','w',0.5,0.05);
 Req2 = TuningGoal.Overshoot('r','w',10);
