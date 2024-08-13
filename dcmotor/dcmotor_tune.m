@@ -36,14 +36,20 @@ clc
 %% sl_dcmotor_cascade_adrc_pid
 mdl = "sl_dcmotor_cascade_adrc_pid";
 open_system(mdl)
-st0 = slTuner(mdl,["C1","C2","C3"]);
+st0 = slTuner(mdl,["C1","C2","C3","C4","C5","C6"]);
 addPoint(st0,["r","w","u","w_f","e_w","i_f","e_i"]);
 
 wc = realp('wc', 1);% controller bandwidth
+wo = realp('wo', 1);% observer bandwidth
 b0 = realp('b0', 1);  
 kp = 2*pi*wc;
+L1 = 2*wo;
+L2 = wo*wo;
 setBlockParam(st0,'C1',kp);
 setBlockParam(st0,'C3',1/b0);
+setBlockParam(st0,'C4',L1);
+setBlockParam(st0,'C5',L2);
+setBlockParam(st0,'C6',b0);
 
 Req1 = TuningGoal.Tracking('r','w',0.5,0.05);
 Req2 = TuningGoal.Overshoot('r','w',10);
