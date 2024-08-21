@@ -1,4 +1,4 @@
-% close all
+close all
 clear
 clc
 
@@ -20,6 +20,17 @@ clc
 % Req3 = TuningGoal.Margins('e',20,40);
 % [st,fSoft] = systune(st0,[Req1,Req2,Req3])
 
+% % writeBlockValue(st);
+% showTunable(st)
+% 
+% plant = getIOTransfer(st0,"u","p",{"w_f"})
+% tf(plant)
+% 
+% CL = getIOTransfer(st,"r","w")
+% tf(CL)
+% figure
+% stepplot(CL);
+
 %% sl_dcmotor_cascade_pid
 % mdl = "sl_dcmotor_cascade_pid";
 % open_system(mdl)
@@ -33,11 +44,22 @@ clc
 % Req4.Openings = 'w_f';
 % [st,fSoft] = systune(st0,[Req1,Req2,Req3,Req4])
 
+% % writeBlockValue(st);
+% showTunable(st)
+% 
+% plant = getIOTransfer(st0,"u","w",{"w_f","i_f"})
+% tf(plant)
+% 
+% CL = getIOTransfer(st,"r","w")
+% tf(CL)
+% figure
+% stepplot(CL);
+
 %% sl_dcmotor_cascade_adrc_pid
 % mdl = "sl_dcmotor_cascade_adrc_pid";
 % open_system(mdl)
 % st0 = slTuner(mdl,["C1","C2","C3","C4","C5","C6"]);
-% addPoint(st0,["r","w","u","w_f","e_w","i_f","e_i"]);
+% addPoint(st0,["r","w","u","w_f","e_w","i_f","e_i","z1"]);
 % 
 % wc = realp('wc', 1);% controller bandwidth
 % wo = realp('wo', 1);% observer bandwidth
@@ -57,6 +79,20 @@ clc
 % Req4 = TuningGoal.Margins('e_i',20,40);
 % Req4.Openings = 'w_f';
 % [st,fSoft] = systune(st0,[Req1,Req2,Req3,Req4])
+% 
+% % writeBlockValue(st);
+% showTunable(st)
+% 
+% plant = getIOTransfer(st0,"u","w",{"w_f","i_f"})
+% tf(plant)
+% 
+% CL = getIOTransfer(st,"r","w")
+% tf(CL)
+% figure
+% stepplot(CL);
+% 
+% CL_ESO = getIOTransfer(st,"w_f","z1")
+% tf(CL_ESO)
 
 %% sl_dcmotor_cascade_pid_kalman (do not use kalman feedback)
 % mdl = "sl_dcmotor_cascade_pid_kalman";
@@ -71,11 +107,28 @@ clc
 % Req3.Openings = 'p_f';
 % [st,fSoft] = systune(st0,[Req1,Req2,Req3,Req4])
 
+% % writeBlockValue(st);
+% showTunable(st)
+% 
+% plant = getIOTransfer(st0,"u","p",{"w_f","p_f"})
+% tf(plant)
+% 
+% CL = getIOTransfer(st,"r","p")
+% tf(CL)
+% figure
+% stepplot(CL);
+
 %% sl_dcmotor_cascade_pid_kalman (use kalman feedback)
 mdl = "sl_dcmotor_cascade_pid_kalman";
 open_system(mdl)
-st0 = slTuner(mdl,["C1","C2","U1","Q"]);
-addPoint(st0,["r","p","u","w_f","e_w","p_f","e_p"]);
+st0 = slTuner(mdl,["C1","C2","K1","K2","K3"]);
+addPoint(st0,["r","p","u","w_f","e_w","p_f","e_p","p_hat"]);
+
+U = realp('U', 1);% matrix U
+Q = realp('Q', 1);% matrix Q
+setBlockParam(st0,'K1',U);
+setBlockParam(st0,'K2',Q);
+setBlockParam(st0,'K3',Q);
 
 Req1 = TuningGoal.Tracking('r','p',0.5,0.05);
 Req2 = TuningGoal.Overshoot('r','p',10);
@@ -84,24 +137,16 @@ Req4 = TuningGoal.Margins('e_p',20,40);
 Req3.Openings = 'p_f';
 [st,fSoft] = systune(st0,[Req1,Req2,Req3,Req4])
 
-%% result
 % writeBlockValue(st);
-plant = getIOTransfer(st0,"u","p",{"w_f","p_f"});
-tf(plant)
-
 showTunable(st)
 
-CL = getIOTransfer(st,"r","p");
+plant = getIOTransfer(st0,"u","p",{"w_f","p_f"})
+tf(plant)
+
+CL = getIOTransfer(st,"r","p")
 tf(CL)
 figure
 stepplot(CL);
 
-% OL = getIOTransfer(st,"r","w","w_f");
-% tf(OL)
-% figure
-% bodeplot(OL)
-% 
-% margin(OL)
-% 
-% figure;
-% viewGoal([Req3],st)
+CL_KF = getIOTransfer(st,"p_f","p_hat")
+tf(CL_KF)
