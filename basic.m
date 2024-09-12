@@ -87,18 +87,19 @@ clc
 %% state space
 % first order close loop system 
 % error system
-% C = [1];
-% D = 0;
+C = [1];
+D = 0;
 % 
 % k = 10;
 % A = [-k];
 % B = [1];
 % sys1 = ss(A,B,C,D);
-
+% 
 % k = 10;
 % A = [-k];
 % B = [k];
 % sys2 = ss(A,B,C,D);
+% bode(sys2)
 % 
 % k = 10;
 % A = [-k];
@@ -138,8 +139,18 @@ clc
 % [b,a] = ss2tf(A,B,C,D)
 
 % butterworth
-fc = 100;
-fs = 10000;
+% fc = 100;
+% fs = 10000;
+% 
+% [b,a] = butter(3,fc/(fs/2))
 
-[b,a] = butter(3,fc/(fs/2))
+% lqr
+A = 0;
+B = 1;
+C = 1;
+D = 0;
+Q = 1;
+R = 1;
+sys = ss(A,B,C,D);
+[K,S,P] = lqr(sys,Q,R)
 
