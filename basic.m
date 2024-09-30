@@ -23,7 +23,7 @@ clc
 % expand((s1+1.367)^2)
 
 %% transfer function
-% s = tf('s');
+s = tf('s');
 % w = {0.1,100};
 % syms k
 
@@ -78,6 +78,9 @@ clc
 % [b,a] = ss2tf(A,B,C,D)
 
 % sys1 = 1/s;
+sys = (86.9*s+9691)/(s^2+136.7*s+10420)
+bode(sys)
+hinfnorm(sys)
 
 % cascade lead compensator
 % G0 = 10/(s*(s+1));
@@ -145,12 +148,12 @@ D = 0;
 % [b,a] = butter(3,fc/(fs/2))
 
 % lqr
-A = 0;
-B = 1;
-C = 1;
-D = 0;
-Q = 1;
-R = 1;
-sys = ss(A,B,C,D);
-[K,S,P] = lqr(sys,Q,R)
+% A = 0;
+% B = 1;
+% C = 1;
+% D = 0;
+% Q = 1;
+% R = 1;
+% sys = ss(A,B,C,D);
+% [K,S,P] = lqr(sys,Q,R)
 
