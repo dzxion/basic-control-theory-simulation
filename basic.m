@@ -23,7 +23,7 @@ clc
 % expand((s1+1.367)^2)
 
 %% transfer function
-s = tf('s');
+% s = tf('s');
 % w = {0.1,100};
 % syms k
 
@@ -78,9 +78,9 @@ s = tf('s');
 % [b,a] = ss2tf(A,B,C,D)
 
 % sys1 = 1/s;
-sys = (86.9*s+9691)/(s^2+136.7*s+10420)
-bode(sys)
-hinfnorm(sys)
+% sys = (86.9*s+9691)/(s^2+136.7*s+10420)
+% bode(sys)
+% hinfnorm(sys)
 
 % cascade lead compensator
 % G0 = 10/(s*(s+1));
@@ -90,8 +90,8 @@ hinfnorm(sys)
 %% state space
 % first order close loop system 
 % error system
-C = [1];
-D = 0;
+% C = [1];
+% D = 0;
 % 
 % k = 10;
 % A = [-k];
@@ -156,4 +156,14 @@ D = 0;
 % R = 1;
 % sys = ss(A,B,C,D);
 % [K,S,P] = lqr(sys,Q,R)
+
+%% Solution of LTI State Equations
+% format rat;
+syms s
+A=[-13/7 -2/7;1 0];
+I = eye(2);
+E = s*I-A;
+C=det(E);
+D=collect(inv(E));
+phi0=ilaplace(D)
 
