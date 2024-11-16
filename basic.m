@@ -167,8 +167,8 @@ syms s R L w
 A = [-R/L 0;1 0];
 B = [1/L;0];
 syms K1 K2
-% K1 = w*L;
-% K2 = K1*R/L;
+K1 = w*L;
+K2 = K1*R/L;
 K = [K1 K2];
 A_cl = A - B*K;
 % I = eye(2);
@@ -180,3 +180,7 @@ eig(A_cl);
 % K2 = K1*R/L;
 % simplify(-(K1 + R + (K1^2 + 2*K1*R + R^2 - 4*K2*L)^(1/2))/(2*L))
 % simplify(-(K1 + R - (K1^2 + 2*K1*R + R^2 - 4*K2*L)^(1/2))/(2*L))
+
+syms a b
+A = [-a -b;1 0];
+eig(A)
