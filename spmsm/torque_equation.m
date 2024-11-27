@@ -71,8 +71,8 @@ function InitConditions(block)
 
 function Output(block)
 
-iq = block.InputPort(1).Data;
-id = block.InputPort(2).Data;
+ieq = block.InputPort(1).Data;
+ied = block.InputPort(2).Data;
 
 pa = block.DialogPrm(1).Data;
 Lq = pa.Lq;
@@ -80,7 +80,7 @@ Ld = pa.Ld;
 phi_m = pa.phi_m;
 P = pa.P;
 
-Te = iq - id;
+Te = 3*P/4 *(phi_m*ieq - (Lq-Ld)*ied*ieq);
 
 block.OutputPort(1).Data = Te;
   
