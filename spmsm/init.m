@@ -9,6 +9,7 @@ pa.Lls = 0.02e-3;% leakage inductance
 pa.phi_m = 0.6;
 pa.P = 6;
 pa.R = 20e-3;
+pa.dc = 24;
 
 pa.Lq = 2.39e-3;
 pa.Ld = 2.10e-3;
