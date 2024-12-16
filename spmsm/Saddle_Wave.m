@@ -1,4 +1,4 @@
-function pwm(block)
+function Saddle_Wave(block)
 % Level-2 MATLAB file S-Function.
 
 %   Copyright 1990-2009 The MathWorks, Inc.S
@@ -76,8 +76,13 @@ pa = block.DialogPrm(1).Data;
 vdc = pa.dc;
 
 vabc_norm = vabc/vdc;
+vabc_max = max(vabc_norm);
+vabc_min = min(vabc_norm);
+vabc_mid = 0.5 * (vabc_max + vabc_min);
 
-block.OutputPort(1).Data = [0;0;0];
+saddle = vabc_norm - vabc_mid + 0.5;
+
+block.OutputPort(1).Data = saddle;
   
 %endfunction
 
