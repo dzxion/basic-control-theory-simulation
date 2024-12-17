@@ -1,4 +1,4 @@
-function park(block)
+function park_inv(block)
 % Level-2 MATLAB file S-Function.
 
 %   Copyright 1990-2009 The MathWorks, Inc.S
@@ -71,17 +71,17 @@ function InitConditions(block)
 
 function Output(block)
 
-fab = block.InputPort(1).Data;
+fdq = block.InputPort(1).Data;
 theta_r = block.InputPort(2).Data;
 pa = block.DialogPrm(1).Data;
 
 P = pa.P;
 theta_e = P/2 * theta_r;
-A = [cos(theta_e) sin(theta_e);
-        -sin(theta_e) cos(theta_e)];
-fdq = A*fab;
+A = [cos(theta_e) -sin(theta_e);
+     sin(theta_e) cos(theta_e)];
+fab = A*fdq;
 
-block.OutputPort(1).Data = fdq;
+block.OutputPort(1).Data = fab;
   
 %endfunction
 

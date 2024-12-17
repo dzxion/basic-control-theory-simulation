@@ -71,13 +71,13 @@ function InitConditions(block)
 
 function Output(block)
 
-iabc = block.InputPort(1).Data;
+fabc = block.InputPort(1).Data;
 
 A = 2/3 * [1 -1/2 -1/2;
                0 sqrt(3)/2 -sqrt(3)/2];
-Iab = A*iabc;
+fab = A*fabc;
 
-block.OutputPort(1).Data = Iab;
+block.OutputPort(1).Data = fab;
   
 %endfunction
 
