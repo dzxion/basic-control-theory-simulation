@@ -80,9 +80,15 @@ Lq = pa.Lq;
 Ld = pa.Ld;
 phi_m = pa.phi_m;
 P = pa.P;
+% Lms = pa.Lms;
+% Lls = pa.Lls;
+% Ldelta = pa.Ldelta;
 
-% Te = 3*P/4 *(phi_m*ieq - (Lq-Ld)*ied*ieq);
-Te = 3*P/4 *(phi_m*ieq);
+% Ls = 3/2*Lms + Lls;
+% Ld = Ls - 3/2*Ldelta;
+% Lq = Ls + 3/2*Ldelta;
+Te = 3*P/4 *(phi_m*ieq - (Lq-Ld)*ied*ieq);
+% Te = 3*P/4 *(phi_m*ieq);
 
 block.OutputPort(1).Data = Te;
   
