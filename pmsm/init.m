@@ -23,11 +23,11 @@ pa.CarrFreq = 10;
 % pa.Kb = .015;
 
 % controller
-pa.BWc_rps = 100;
+pa.wc = 100;
 % currentCtrlPeriod_sec =  1.0 / (pa.CarrFreq * 1000);
-pa.Kp_Iq = pa.BWc_rps*pa.Lq;
+pa.Kp_Iq = pa.wc*pa.Lq;
 pa.Ki_Iq = pa.R/pa.Lq;
-pa.Kp_Id = pa.BWc_rps*pa.Ld;
+pa.Kp_Id = pa.wc*pa.Ld;
 pa.Ki_Id = pa.R/pa.Ld;
 
 % pa.Kp_Id = 1;

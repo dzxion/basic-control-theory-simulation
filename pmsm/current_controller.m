@@ -41,7 +41,7 @@ function setup(block)
   block.SampleTimes = [0 0];
   
   %% Setup Dwork
-  block.NumContStates = 0;
+  block.NumContStates = 2;
   
   %% Set the block simStateCompliance to default (i.e., same as a built-in block)
   block.SimStateCompliance = 'DefaultSimState';
@@ -82,6 +82,7 @@ function Output(block)
 idq_ref = block.InputPort(1).Data;
 idq_fed = block.InputPort(2).Data;
 pa = block.DialogPrm(1).Data;
+sigma = block.ContStates.Data;
 
 % J_hat = pa.J_hat;
 % K_w = pa.K_w;
@@ -92,8 +93,7 @@ pa = block.DialogPrm(1).Data;
 edq = idq_fed - idq_ref;
 ud = -pa.Kp_Id * edq(1) - pa.Kp_Id*pa.Ki_Id * sigma(1);
 uq = -pa.Kp_Iq * edq(2) - pa.Kp_Iq*pa.Ki_Iq * sigma(2);
-udq(1) = ud;
-udq(2) = uq;
+udq = [ud;uq];
 
 block.OutputPort(1).Data = udq;
   
