@@ -72,12 +72,8 @@ function InitConditions(block)
 
 %% Initialize Dwork
 %   block.Dwork(1).Data = block.DialogPrm(1).Data;
-% block.ContStates.Data = [0;
-%                          0;
-%                          0;
-%                          0;
-%                          0;
-%                          0];
+block.ContStates.Data = [0;
+                         0];
   
 %endfunction
 
@@ -93,12 +89,22 @@ pa = block.DialogPrm(1).Data;
 % 
 % Gamma = Sw*J_hat*omega_d - J_hat*K_w*(omega-omega_d);
 
+edq = idq_fed - idq_ref;
+ud = -pa.Kp_Id * edq(1) - pa.Kp_Id*pa.Ki_Id * sigma(1);
+uq = -pa.Kp_Iq * edq(2) - pa.Kp_Iq*pa.Ki_Iq * sigma(2);
+udq(1) = ud;
+udq(2) = uq;
+
 block.OutputPort(1).Data = udq;
   
 %endfunction
 
 function Derivative(block)
 
+idq_ref = block.InputPort(1).Data;
+idq_fed = block.InputPort(2).Data;
+edq = idq_fed - idq_ref;
+block.Derivatives.Data = edq;
 
 %endfunction
 

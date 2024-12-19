@@ -23,16 +23,19 @@ pa.CarrFreq = 10;
 % pa.Kb = .015;
 
 % controller
-% pa.BWc_rps = 100;
-% pa.CarrFreq = 20;
+pa.BWc_rps = 100;
 % currentCtrlPeriod_sec =  1.0 / (pa.CarrFreq * 1000);
-% pa.Kp_Iq = pa.BWc_rps*pa.Ls_q_H;
-% pa.Ki_Iq = pa.Rs_Ohm/pa.Ls_q_H;
-% pa.Kp_Id = pa.BWc_rps*pa.Ls_d_H;
-% pa.Ki_Id = pa.Rs_Ohm/pa.Ls_d_H;
+pa.Kp_Iq = pa.BWc_rps*pa.Lq;
+pa.Ki_Iq = pa.R/pa.Lq;
+pa.Kp_Id = pa.BWc_rps*pa.Ld;
+pa.Ki_Id = pa.R/pa.Ld;
 
 % pa.Kp_Id = 1;
 % pa.Ki_Id = 1;
 % 
 % pa.Kp_Iq = 1;
 % pa.Ki_Iq = 1;
+
+% target
+pa.iq_ref = 1;
+pa.id_ref = 1;
