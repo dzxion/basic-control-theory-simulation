@@ -89,6 +89,14 @@ phi_m = pa.phi_m;
 we = P/2 * wr;
 % Ls = 3/2 * Lms + Lls;
 
+% simplify model
+% A = [-R/Ld 0;
+%      0 -R/Lq];
+% B = [1/Ld 0;
+%      0 1/Lq];
+% u = vdq;
+% d = [0;0];
+
 % ipmsm
 A = [-R/Ld we*Lq/Ld;
      -we*Ld/Lq -R/Lq];
