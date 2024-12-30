@@ -19,11 +19,13 @@ clc
 % f1 = @(x) 10*exp(-10*x);
 % f2 = @(x) 1*exp(-10*x);
 % fplot(@(x) 10*exp(-0*x))
-% fplot(@(x) 10*exp(-1*x),[0 5])
+k = -0.5;
+x_init = 10;
+% fplot(@(x) 10*exp(k*x),[0 10])
 % hold on
-% fplot(@(x) 5*exp(-1*x),[0 5])
+% fplot(@(x) 5*exp(k*x),[0 10])
 % hold on
-% fplot(@(x) 1*exp(-1*x),[0 5])
+fplot(@(x) x_init*exp(k*x),[0 10])
 % expand((s1+1.367)^2)
 
 %% transfer function
@@ -165,19 +167,19 @@ clc
 % format rat;
 % 参考khalil 12.4 Integral Control via Linearization
 % 直接套公式即可
-syms s R L w
-A = [-R/L 0;1 0];
-B = [1/L;0];
-syms K1 K2
-K1 = w*L;
-K2 = K1*R/L;
-K = [K1 K2];
-A_cl = A - B*K
+% syms s R L w
+% A = [-R/L 0;1 0];
+% B = [1/L;0];
+% syms K1 K2
+% K1 = w*L;
+% K2 = K1*R/L;
+% K = [K1 K2];
+% A_cl = A - B*K
 % I = eye(2);
 % temp1 = s*I - A_cl;
 % temp2 = inv(temp1);
 % phi0 = simplify(ilaplace(temp2))
-eig(A_cl)
+% eig(A_cl)
 % K1 = w*L;
 % K2 = K1*R/L;
 % simplify(-(K1 + R + (K1^2 + 2*K1*R + R^2 - 4*K2*L)^(1/2))/(2*L))
