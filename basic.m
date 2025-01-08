@@ -19,13 +19,13 @@ clc
 % f1 = @(x) 10*exp(-10*x);
 % f2 = @(x) 1*exp(-10*x);
 % fplot(@(x) 10*exp(-0*x))
-k = -0.5;
-x_init = 10;
+% k = -0.5;
+% x_init = 10;
 % fplot(@(x) 10*exp(k*x),[0 10])
 % hold on
 % fplot(@(x) 5*exp(k*x),[0 10])
 % hold on
-fplot(@(x) x_init*exp(k*x),[0 10])
+% fplot(@(x) x_init*exp(k*x),[0 10])
 % expand((s1+1.367)^2)
 
 %% transfer function
@@ -167,24 +167,32 @@ fplot(@(x) x_init*exp(k*x),[0 10])
 % format rat;
 % 参考khalil 12.4 Integral Control via Linearization
 % 直接套公式即可
-% syms s R L w
+
+% current closed loop
+syms R L w
 % A = [-R/L 0;1 0];
 % B = [1/L;0];
-% syms K1 K2
 % K1 = w*L;
 % K2 = K1*R/L;
 % K = [K1 K2];
 % A_cl = A - B*K
-% I = eye(2);
-% temp1 = s*I - A_cl;
-% temp2 = inv(temp1);
-% phi0 = simplify(ilaplace(temp2))
 % eig(A_cl)
-% K1 = w*L;
-% K2 = K1*R/L;
-% simplify(-(K1 + R + (K1^2 + 2*K1*R + R^2 - 4*K2*L)^(1/2))/(2*L))
-% simplify(-(K1 + R - (K1^2 + 2*K1*R + R^2 - 4*K2*L)^(1/2))/(2*L))
 
-% syms a b
-% A = [-a -b;1 0];
-% eig(A)
+% velocity closed loop
+syms B J
+syms Kp Ki
+syms K1 K2
+
+% J = 2.2951e-5;
+% B = 1.1475e-5;
+% Kp = 0.35;
+% Ki = 140;
+
+K1 = Kp;
+K2 = Kp*Ki;
+
+A = [-B/J 0;1 0];
+B = [1/J;0];
+K = [K1 K2];
+A_cl = A - B*K
+eig(A_cl)
