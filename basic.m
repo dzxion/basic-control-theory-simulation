@@ -179,20 +179,23 @@ syms R L w
 % eig(A_cl)
 
 % velocity closed loop
-syms B J
+syms B J Km
 syms Kp Ki
 syms K1 K2
 
-% J = 2.2951e-5;
-% B = 1.1475e-5;
-% Kp = 0.35;
-% Ki = 140;
+J = 2.2951e-5;
+B = 1.1475e-5;
+Kp = 0.35;
+Ki = 140;
+P = 14;% number of pole
+phi_m = 0.00469;
+Km = 3*P/4 *phi_m;
 
 K1 = Kp;
 K2 = Kp*Ki;
 
 A = [-B/J 0;1 0];
-B = [1/J;0];
+B = [Km/J;0];
 K = [K1 K2];
 A_cl = A - B*K
 eig(A_cl)
