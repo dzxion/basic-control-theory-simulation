@@ -163,13 +163,11 @@ clc
 % sys = ss(A,B,C,D);
 % [K,S,P] = lqr(sys,Q,R)
 
-%% Solution of LTI State Equations
-% format rat;
-% 参考khalil 12.4 Integral Control via Linearization
+%% 参考khalil 12.4 Integral Control via Linearization
 % 直接套公式即可
 
 % current closed loop
-syms R L w
+% syms R L w
 % A = [-R/L 0;1 0];
 % B = [1/L;0];
 % K1 = w*L;
@@ -179,23 +177,42 @@ syms R L w
 % eig(A_cl)
 
 % velocity closed loop
-syms B J Km
-syms Kp Ki
-syms K1 K2
+% syms B J Km
+% syms Kp Ki
+% syms K1 K2
+% 
+% J = 2.2951e-5;
+% B = 1.1475e-5;
+% Kp = 0.35;
+% Ki = 140;
+% P = 14;% number of pole
+% phi_m = 0.00469;
+% Km = 3*P/4 *phi_m;
+% 
+% K1 = Kp;
+% K2 = Kp*Ki;
+% 
+% A = [-B/J 0;1 0];
+% B = [Km/J;0];
+% K = [K1 K2];
+% A_cl = A - B*K
+% eig(A_cl)
+% 
+% Q = eye(2)
+% X = lyap(A_cl,Q)
+% eig(X)
+% 
+% Q1 = X*A_cl+A_cl'*X
 
-J = 2.2951e-5;
-B = 1.1475e-5;
-Kp = 0.35;
-Ki = 140;
-P = 14;% number of pole
-phi_m = 0.00469;
-Km = 3*P/4 *phi_m;
+%% lyapunov equation test
+A = [1 2; -3 -4];
+Q = eye(2);
+% eig(A)
+% X = lyap(A,Q)
+% eig(X)
+% Q1 = X*A+A'*X
+% Q2 = A*X+X*A'
 
-K1 = Kp;
-K2 = Kp*Ki;
-
-A = [-B/J 0;1 0];
-B = [Km/J;0];
-K = [K1 K2];
-A_cl = A - B*K
-eig(A_cl)
+syms P
+eqn = P*A + A'*P == Q
+S = solve(eqn,P)
