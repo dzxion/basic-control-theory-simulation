@@ -177,10 +177,10 @@ clc
 % eig(A_cl)
 
 % velocity closed loop
-% syms B J Km
-% syms Kp Ki
-% syms K1 K2
-% 
+syms B J Km real
+syms Kp Ki real
+syms K1 K2 real
+
 % J = 2.2951e-5;
 % B = 1.1475e-5;
 % Kp = 0.35;
@@ -188,31 +188,48 @@ clc
 % P = 14;% number of pole
 % phi_m = 0.00469;
 % Km = 3*P/4 *phi_m;
-% 
-% K1 = Kp;
-% K2 = Kp*Ki;
-% 
-% A = [-B/J 0;1 0];
-% B = [Km/J;0];
-% K = [K1 K2];
-% A_cl = A - B*K
-% eig(A_cl)
-% 
-% Q = eye(2)
+
+K1 = Kp;
+K2 = Kp*Ki;
+
+A = [-B/J 0;1 0];
+B = [Km/J;0];
+K = [K1 K2];
+A_cl = A - B*K
+eig(A_cl)
+
+Q = eye(2)
 % X = lyap(A_cl,Q)
 % eig(X)
 % 
 % Q1 = X*A_cl+A_cl'*X
 
-%% lyapunov equation test
-A = [1 2; -3 -4];
-Q = eye(2);
-% eig(A)
-% X = lyap(A,Q)
-% eig(X)
-% Q1 = X*A+A'*X
-% Q2 = A*X+X*A'
+syms p11 p12 p21 p22
+X = [p11 p12;p21 p22];
 
-syms P
-eqn = P*A + A'*P == Q
-S = solve(eqn,P)
+eqn = X*A_cl + A_cl'*X == -Q
+S = solve(eqn,X)
+
+P_1 = [S.p11 S.p12;S.p21 S.p22]
+
+% eig(P_1)
+P_1*A_cl + A_cl'*P_1
+
+%% lyapunov equation test
+% A = [1 2; -3 -4];
+% Q = eye(2);
+% % eig(A)
+% % X = lyap(A,Q)
+% % eig(X)
+% % Q1 = X*A+A'*X
+% % Q2 = A*X+X*A'
+% 
+% syms p11 p12 p21 p22
+% P = [p11 p12;p21 p22];
+% 
+% eqn = P*A + A'*P == -Q
+% S = solve(eqn,P)
+% 
+% P_1 = [S.p11 S.p12;S.p21 S.p22]
+% P_1*A + A'*P_1
+
