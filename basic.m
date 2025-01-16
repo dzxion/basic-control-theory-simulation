@@ -169,6 +169,7 @@ J = 2.2951e-5;
 B = 1.1475e-5;
 Kp_v = 0.35;
 Ki_v = 140;
+Ki_v = Kp_v*Ki_v;
 P = 14;% number of pole
 phi_m = 0.00469;
 Km = 3*P/4 *phi_m;
@@ -177,6 +178,7 @@ R = 5.2;
 wc = 130;
 Kp_i = wc*L;
 Ki_i = R/L;
+Ki_i = Kp_i*Ki_i;
 
 % current closed loop
 % syms R L w
@@ -216,8 +218,14 @@ Ki_i = R/L;
 % % P_1*A_cl + A_cl'*P_1
 
 % cascade closed loop
-A = [-(B+Km*Kp_v)/J -Km*Kp_v*Ki_v/J     Km/J          0;
-           1          0                  0            0;
-           0          0             (-R-Kp_i)/L -Kp_i*Ki_i/L;
-           0          0                  1            0];
+% A = [-(B+Km*Kp_v)/J -Km*Kp_v*Ki_v/J     Km/J          0;
+%            1          0                  0            0;
+%            0          0             (-R-Kp_i)/L -Kp_i*Ki_i/L;
+%            0          0                  1            0];
+% eig(A)
+
+A = [-(B+Km*Kp_v)/J                      -Km*Ki_v/J                 Km/J              0;
+           1                               0                         0                0;
+     Kp_v*R/L-Kp_v*(B+Km*Kp_v)/J+Ki_v  Ki_v*R/L-Km*Ki_v*Kp_v/J (-R-Kp_i)/L+Km*Kp_v/J -Ki_i/L;
+           0                               0                         1                0];
 eig(A)
