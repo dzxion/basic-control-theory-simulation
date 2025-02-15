@@ -2,6 +2,8 @@ close all
 clear
 clc
 
+s = tf('s');
+
 %% some function
 % syms s1
 % fplot(@(x) sin(x))
@@ -29,7 +31,6 @@ clc
 % expand((s1+1.367)^2)
 
 %% transfer function
-% s = tf('s');
 % w = {0.1,100};
 % syms k
 
@@ -165,20 +166,20 @@ clc
 
 %% 参考khalil 12.4 Integral Control via Linearization
 % 直接套公式即可
-J = 2.2951e-5;
-B = 1.1475e-5;
-Kp_v = 0.35;
-Ki_v = 140;
-Ki_v = Kp_v*Ki_v;
-P = 14;% number of pole
-phi_m = 0.00469;
-Km = 3*P/4 *phi_m;
-L = 2.39e-3;
-R = 5.2;
-wc = 130;
-Kp_i = wc*L;
-Ki_i = R/L;
-Ki_i = Kp_i*Ki_i;
+% J = 2.2951e-5;
+% B = 1.1475e-5;
+% Kp_v = 0.35;
+% Ki_v = 140;
+% Ki_v = Kp_v*Ki_v;
+% P = 14;% number of pole
+% phi_m = 0.00469;
+% Km = 3*P/4 *phi_m;
+% L = 2.39e-3;
+% R = 5.2;
+% wc = 130;
+% Kp_i = wc*L;
+% Ki_i = R/L;
+% Ki_i = Kp_i*Ki_i;
 
 % current closed loop
 % syms R L w
@@ -224,8 +225,56 @@ Ki_i = Kp_i*Ki_i;
 %            0          0                  1            0];
 % eig(A)
 
-A = [-(B+Km*Kp_v)/J                      -Km*Ki_v/J                 Km/J              0;
-           1                               0                         0                0;
-     Kp_v*R/L-Kp_v*(B+Km*Kp_v)/J+Ki_v  Ki_v*R/L-Km*Ki_v*Kp_v/J (-R-Kp_i)/L+Km*Kp_v/J -Ki_i/L;
-           0                               0                         1                0];
-eig(A)
+% A = [-(B+Km*Kp_v)/J                      -Km*Ki_v/J                 Km/J              0;
+%            1                               0                         0                0;
+%      Kp_v*R/L-Kp_v*(B+Km*Kp_v)/J+Ki_v  Ki_v*R/L-Km*Ki_v*Kp_v/J (-R-Kp_i)/L+Km*Kp_v/J -Ki_i/L;
+%            0                               0                         1                0];
+% eig(A)
+
+% H_infinity control
+% G = (s-1)/(s+1)^2;
+% W1 = makeweight(10,[1 0.1],0.01);
+% W2 = makeweight(0.1,[32 0.32],1);
+% W3 = makeweight(0.01,[1 0.1],10);
+% tf(W1)
+% [K,CL,gamma] = mixsyn(G,W1,W2,W3);
+% S = feedback(1,G*K);
+% KS = K*S;
+% T = 1-S;
+% bode(S,W1,1/W1)
+% legend('S','W1','1/W1');
+
+% bode
+% G1 = 30*s^0;
+% G2 = s+1;
+% G3 = 1/((s+0.01)^2);
+% G4 = 1/(s+10);
+% G5 = G1*G2*G3*G4;
+% bode(G1,G2,G3,G4,G5)
+% legend("G1","G2","G3","G4","G5")
+
+% G1 = 1/(s+1);
+% G2 = 1/(s+10);
+% bode(G1,G2)
+% legend("G1","G2")
+
+M = 1.5;
+wb = 10;
+A = 1.e-4;
+
+% G1 = A*s^0;
+% G2 = s/(A*wb)+1;
+% G3 = 1/(s/(M*wb)+1);
+% G4 = G1*G2*G3;
+% bode(G1,G2,G3,G4)
+% legend("G1","G2","G3","G4")
+
+Wp1 = (s/M+wb)/(s+wb*A);
+Wp1_inv = 1/Wp1;
+
+Wp2 = (s/M^0.5+wb)^2/(s+wb*A^0.5)^2;
+Wp2_inv = 1/Wp2;
+
+bode(Wp1_inv,Wp2_inv)
+legend("Wp1^{-1}","Wp2^{-1}")
+
