@@ -231,7 +231,7 @@ s = tf('s');
 %            0                               0                         1                0];
 % eig(A)
 
-% H_infinity control
+% mixsyn
 % G = (s-1)/(s+1)^2;
 % W1 = makeweight(10,[1 0.1],0.01);
 % W2 = makeweight(0.1,[32 0.32],1);
@@ -243,6 +243,9 @@ s = tf('s');
 % T = 1-S;
 % bode(S,W1,1/W1)
 % legend('S','W1','1/W1');
+% W1 = 15*((s/(s+0.05))*(5/(s+5)))^2;
+% W1_inv = 1/W1;
+% bode(W1_inv)
 
 % bode
 % G1 = 30*s^0;
@@ -258,23 +261,87 @@ s = tf('s');
 % bode(G1,G2)
 % legend("G1","G2")
 
-M = 1.5;
-wb = 10;
-A = 1.e-4;
+% M = 1.5;
+% wb = 10;
+% A = 1.e-4;
+% 
+% Wp1 = (s/M+wb)/(s+wb*A);
+% Wp1_inv = 1/Wp1;
+% 
+% Wp2 = (s/M^0.5+wb)^2/(s+wb*A^0.5)^2;
+% Wp2_inv = 1/Wp2;
+% 
+% bode(Wp1_inv,Wp2_inv)
+% legend("Wp1^{-1}","Wp2^{-1}")
 
-% G1 = A*s^0;
-% G2 = s/(A*wb)+1;
-% G3 = 1/(s/(M*wb)+1);
-% G4 = G1*G2*G3;
-% bode(G1,G2,G3,G4)
-% legend("G1","G2","G3","G4")
+% Weighting function
+% Wl = makeweight(100,[1,3.16],0.1);
+% Wh = makeweight(0.316,10,100);
+% tf(Wl)
+% tf(Wh)
+% bodemag(Wl,Wh)
+% legend
+% grid on
 
-Wp1 = (s/M+wb)/(s+wb*A);
-Wp1_inv = 1/Wp1;
+% W3c = makeweight(0.316,[1 2],100,0,3);
+% W2c = makeweight(0.316,[1 2],100,0,2);
+% W1c = makeweight(0.316,[1 2],100);
+% bodemag(W3c,W2c,W1c)
+% legend
+% grid on
 
-Wp2 = (s/M^0.5+wb)^2/(s+wb*A^0.5)^2;
-Wp2_inv = 1/Wp2;
+% getIOTransfer
+% G1 = tf(10,[1 10]);
+% G2 = tf([1 2],[1 0.2 10]);
+% C1 = tunablePID('C','pi');
+% C2 = tunableGain('G',1);
+% X1 = AnalysisPoint('X1');
+% X2 = AnalysisPoint('X2');
+% T = feedback(G1*feedback(G2*C2,X2)*C1,X1);
+% T.InputName = 'r';
+% T.OutputName = 'y';
+% H1 = getIOTransfer(T,'X1','y');
+% H2 = getIOTransfer(T,'X2','y');
+% H = getIOTransfer(T,{'X1','X2'},'y');
 
-bode(Wp1_inv,Wp2_inv)
-legend("Wp1^{-1}","Wp2^{-1}")
+%% longitudinal passenger jet(use hinfstruct to tune)
 
+% Tuning Setup
+ST0 = slTuner('rct_concorde',{'Ki','Kp','Kq','Kf','RollOff'});
+wn = realp('wn', 3);               % natural frequency
+zeta = realp('zeta',0.8);          % damping
+Fro = tf(wn^2,[1 2*zeta*wn wn^2]); % parametric transfer function
+setBlockParam(ST0,'RollOff',Fro)   % use Fro to parameterize "RollOff" block
+
+% Design Requirements
+T1=ST0.getIOTransfer('Nzc','e');% tracking
+T2=ST0.getIOTransfer('n','delta_m'); % roll-off
+T3=ST0.getIOTransfer('w','delta_m'); % margins
+W1 = 15*((s/(s+0.05))*(5/(s+5)))^2;
+W2 = (s/(s+8))*(((1/8^2)*s^2+(2^0.5/8)*s+1)/((1/800^2)*s^2+(2^0.5/800)*s+1));
+W3 = 0.8;
+
+% Autopilot Tuning
+H0 = blkdiag(W1*T1, W2*T2, W3*T3)
+H = hinfstruct(H0);%H is tuned versionof H0
+ST0.setBlockValue(H);
+Fro = getBlockValue(ST0,'RollOff');
+
+% Closed-Loop Simulations
+Gref = tf(1.7^2,[1 2*0.7*1.7 1.7^2]);    % reference model
+T = getIOTransfer(ST0,'Nzc','Nz');  % transfer Nzc -> Nz
+figure, step(T,'b',Gref,'b--',6), grid,
+ylabel('N_z'), legend('Actual response','Reference model')
+
+T = getIOTransfer(ST0,'Nzc','delta_m');  % transfer Nzc -> delta_m
+Kf = getBlockValue(ST0,'Kf');            % tuned value of Kf
+Tff = Fro*Kf;         % feedforward contribution to delta_m
+figure
+step(T,'b',Tff,'g--',T-Tff,'r-.',6), grid
+ylabel('\delta_m'), legend('Total','Feedforward','Feedback')
+
+OL = getLoopTransfer(ST0,'delta_m',-1); % negative-feedback loop transfer
+figure
+margin(OL);
+grid;
+xlim([1e-3,1e2]);
