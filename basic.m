@@ -305,13 +305,15 @@ s = tf('s');
 % H = getIOTransfer(T,{'X1','X2'},'y');
 
 %% longitudinal passenger jet(use hinfstruct to tune)
+% openExample('control/concorde_demo')
+% open_system('rct_concorde')
 
 % Tuning Setup
 ST0 = slTuner('rct_concorde',{'Ki','Kp','Kq','Kf','RollOff'});
-wn = realp('wn', 3);               % natural frequency
-zeta = realp('zeta',0.8);          % damping
-Fro = tf(wn^2,[1 2*zeta*wn wn^2]); % parametric transfer function
-setBlockParam(ST0,'RollOff',Fro)   % use Fro to parameterize "RollOff" block
+% wn = realp('wn', 3);               % natural frequency
+% zeta = realp('zeta',0.8);          % damping
+% Fro = tf(wn^2,[1 2*zeta*wn wn^2]); % parametric transfer function
+% setBlockParam(ST0,'RollOff',Fro)   % use Fro to parameterize "RollOff" block
 
 % Design Requirements
 T1=ST0.getIOTransfer('Nzc','e');% tracking
@@ -321,27 +323,27 @@ W1 = 15*((s/(s+0.05))*(5/(s+5)))^2;
 W2 = (s/(s+8))*(((1/8^2)*s^2+(2^0.5/8)*s+1)/((1/800^2)*s^2+(2^0.5/800)*s+1));
 W3 = 0.8;
 
-% Autopilot Tuning
-H0 = blkdiag(W1*T1, W2*T2, W3*T3)
-H = hinfstruct(H0);%H is tuned versionof H0
-ST0.setBlockValue(H);
-Fro = getBlockValue(ST0,'RollOff');
-
-% Closed-Loop Simulations
-Gref = tf(1.7^2,[1 2*0.7*1.7 1.7^2]);    % reference model
-T = getIOTransfer(ST0,'Nzc','Nz');  % transfer Nzc -> Nz
-figure, step(T,'b',Gref,'b--',6), grid,
-ylabel('N_z'), legend('Actual response','Reference model')
-
-T = getIOTransfer(ST0,'Nzc','delta_m');  % transfer Nzc -> delta_m
-Kf = getBlockValue(ST0,'Kf');            % tuned value of Kf
-Tff = Fro*Kf;         % feedforward contribution to delta_m
-figure
-step(T,'b',Tff,'g--',T-Tff,'r-.',6), grid
-ylabel('\delta_m'), legend('Total','Feedforward','Feedback')
-
-OL = getLoopTransfer(ST0,'delta_m',-1); % negative-feedback loop transfer
-figure
-margin(OL);
-grid;
-xlim([1e-3,1e2]);
+% % Autopilot Tuning
+% H0 = blkdiag(W1*T1, W2*T2, W3*T3)
+% H = hinfstruct(H0);%H is tuned versionof H0
+% ST0.setBlockValue(H);
+% Fro = getBlockValue(ST0,'RollOff');
+% 
+% % Closed-Loop Simulations
+% Gref = tf(1.7^2,[1 2*0.7*1.7 1.7^2]);    % reference model
+% T = getIOTransfer(ST0,'Nzc','Nz');  % transfer Nzc -> Nz
+% figure, step(T,'b',Gref,'b--',6), grid,
+% ylabel('N_z'), legend('Actual response','Reference model')
+% 
+% T = getIOTransfer(ST0,'Nzc','delta_m');  % transfer Nzc -> delta_m
+% Kf = getBlockValue(ST0,'Kf');            % tuned value of Kf
+% Tff = Fro*Kf;         % feedforward contribution to delta_m
+% figure
+% step(T,'b',Tff,'g--',T-Tff,'r-.',6), grid
+% ylabel('\delta_m'), legend('Total','Feedforward','Feedback')
+% 
+% OL = getLoopTransfer(ST0,'delta_m',-1); % negative-feedback loop transfer
+% figure
+% margin(OL);
+% grid;
+% xlim([1e-3,1e2]);
