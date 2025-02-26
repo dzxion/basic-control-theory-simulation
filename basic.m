@@ -309,19 +309,19 @@ s = tf('s');
 % open_system('rct_concorde')
 
 % Tuning Setup
-ST0 = slTuner('rct_concorde',{'Ki','Kp','Kq','Kf','RollOff'});
-% wn = realp('wn', 3);               % natural frequency
-% zeta = realp('zeta',0.8);          % damping
-% Fro = tf(wn^2,[1 2*zeta*wn wn^2]); % parametric transfer function
-% setBlockParam(ST0,'RollOff',Fro)   % use Fro to parameterize "RollOff" block
-
-% Design Requirements
-T1=ST0.getIOTransfer('Nzc','e');% tracking
-T2=ST0.getIOTransfer('n','delta_m'); % roll-off
-T3=ST0.getIOTransfer('w','delta_m'); % margins
-W1 = 15*((s/(s+0.05))*(5/(s+5)))^2;
-W2 = (s/(s+8))*(((1/8^2)*s^2+(2^0.5/8)*s+1)/((1/800^2)*s^2+(2^0.5/800)*s+1));
-W3 = 0.8;
+% ST0 = slTuner('rct_concorde',{'Ki','Kp','Kq','Kf','RollOff'});
+% % wn = realp('wn', 3);               % natural frequency
+% % zeta = realp('zeta',0.8);          % damping
+% % Fro = tf(wn^2,[1 2*zeta*wn wn^2]); % parametric transfer function
+% % setBlockParam(ST0,'RollOff',Fro)   % use Fro to parameterize "RollOff" block
+% 
+% % Design Requirements
+% T1=ST0.getIOTransfer('Nzc','e');% tracking
+% T2=ST0.getIOTransfer('n','delta_m'); % roll-off
+% T3=ST0.getIOTransfer('w','delta_m'); % margins
+% W1 = 15*((s/(s+0.05))*(5/(s+5)))^2;
+% W2 = (s/(s+8))*(((1/8^2)*s^2+(2^0.5/8)*s+1)/((1/800^2)*s^2+(2^0.5/800)*s+1));
+% W3 = 0.8;
 
 % % Autopilot Tuning
 % H0 = blkdiag(W1*T1, W2*T2, W3*T3)
@@ -347,3 +347,31 @@ W3 = 0.8;
 % margin(OL);
 % grid;
 % xlim([1e-3,1e2]);
+
+% Discretization
+sys1 = 2/(s^2+3*s+2);
+A = [0 1;-2 -3];
+B = [0;2];
+C = [1 0];
+D = 0;
+sys2 = ss(A,B,C,D);
+
+Ts = 0.1;
+I = eye(2);
+A_d = inv((I-Ts/2*A))*(I+Ts/2*A);
+B_d = inv((I-Ts/2*A))*Ts/2*B;
+C_d = C*(A_d+I);
+D_d = C*B_d+D;
+sys3 = ss(A_d,B_d,C_d,D_d,0.1)
+
+A_d1 = [0.7236 -0.0861;0.1722 0.9909];
+B_d1 = [0.0609;0.0064];
+C_d1 = [0 1.4142];
+D_d1 = 0;
+sys4 = ss(A_d1,B_d1,C_d1,D_d1,0.1);
+
+sys5 = c2d(sys2,0.1);
+sys6 = c2d(sys2,0.1,'tustin')
+
+step(sys1,sys3,sys6)
+legend
