@@ -304,6 +304,19 @@ s = tf('s');
 % H2 = getIOTransfer(T,'X2','y');
 % H = getIOTransfer(T,{'X1','X2'},'y');
 
+% hinfstruct
+G = tf([1 2],[1 5 10]);% plant model
+kp = realp('kp', 1);
+ki = realp('ki', 1);
+kd = realp('kd', 1);
+C = (kd*s^2+kp*s+ki)/s;
+S = feedback(1,G*C);
+T = feedback(G*C,1);
+W1 = (0.01*s+35)/(s+0.01);
+W2 = (6.67*s+100)/(0.01*s+400);
+H0 = blkdiag(W1*S, W2*T);
+H = hinfstruct(H0);
+
 %% longitudinal passenger jet(use hinfstruct to tune)
 % openExample('control/concorde_demo')
 % open_system('rct_concorde')
@@ -349,29 +362,29 @@ s = tf('s');
 % xlim([1e-3,1e2]);
 
 % Discretization
-sys1 = 2/(s^2+3*s+2);
-A = [0 1;-2 -3];
-B = [0;2];
-C = [1 0];
-D = 0;
-sys2 = ss(A,B,C,D);
-
-Ts = 0.1;
-I = eye(2);
-A_d = inv((I-Ts/2*A))*(I+Ts/2*A);
-B_d = inv((I-Ts/2*A))*Ts/2*B;
-C_d = C*(A_d+I);
-D_d = C*B_d+D;
-sys3 = ss(A_d,B_d,C_d,D_d,0.1)
-
-A_d1 = [0.7236 -0.0861;0.1722 0.9909];
-B_d1 = [0.0609;0.0064];
-C_d1 = [0 1.4142];
-D_d1 = 0;
-sys4 = ss(A_d1,B_d1,C_d1,D_d1,0.1);
-
-sys5 = c2d(sys2,0.1);
-sys6 = c2d(sys2,0.1,'tustin')
-
-step(sys1,sys3,sys6)
-legend
+% sys1 = 2/(s^2+3*s+2);
+% A = [0 1;-2 -3];
+% B = [0;2];
+% C = [1 0];
+% D = 0;
+% sys2 = ss(A,B,C,D);
+% 
+% Ts = 0.1;
+% I = eye(2);
+% A_d = inv((I-Ts/2*A))*(I+Ts/2*A);
+% B_d = inv((I-Ts/2*A))*Ts/2*B;
+% C_d = C*(A_d+I);
+% D_d = C*B_d+D;
+% sys3 = ss(A_d,B_d,C_d,D_d,0.1)
+% 
+% A_d1 = [0.7236 -0.0861;0.1722 0.9909];
+% B_d1 = [0.0609;0.0064];
+% C_d1 = [0 1.4142];
+% D_d1 = 0;
+% sys4 = ss(A_d1,B_d1,C_d1,D_d1,0.1);
+% 
+% sys5 = c2d(sys2,0.1);
+% sys6 = c2d(sys2,0.1,'tustin')
+% 
+% step(sys1,sys3,sys6)
+% legend
