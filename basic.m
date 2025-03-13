@@ -305,17 +305,17 @@ s = tf('s');
 % H = getIOTransfer(T,{'X1','X2'},'y');
 
 % hinfstruct
-G = tf([1 2],[1 5 10]);% plant model
-kp = realp('kp', 1);
-ki = realp('ki', 1);
-kd = realp('kd', 1);
-C = (kd*s^2+kp*s+ki)/s;
-S = feedback(1,G*C);
-T = feedback(G*C,1);
-W1 = (0.01*s+35)/(s+0.01);
-W2 = (6.67*s+100)/(0.01*s+400);
-H0 = blkdiag(W1*S, W2*T);
-H = hinfstruct(H0);
+% G = tf([1 2],[1 5 10]);% plant model
+% kp = realp('kp', 1);
+% ki = realp('ki', 1);
+% kd = realp('kd', 1);
+% C = (kd*s^2+kp*s+ki)/s;
+% S = feedback(1,G*C);
+% T = feedback(G*C,1);
+% W1 = (0.01*s+35)/(s+0.01);
+% W2 = (6.67*s+100)/(0.01*s+400);
+% H0 = blkdiag(W1*S, W2*T);
+% H = hinfstruct(H0);
 
 %% longitudinal passenger jet(use hinfstruct to tune)
 % openExample('control/concorde_demo')
@@ -388,3 +388,12 @@ H = hinfstruct(H0);
 % 
 % step(sys1,sys3,sys6)
 % legend
+
+% esc open-loop
+syms B J c Kt w_eq R Lq phi_m n
+J = 2.2951e-5;
+B = 1.1475e-5;
+
+A_ol = [-(B+4*c*w_eq)/J Kt/J;
+        -n*phi_m/Lq -R/Lq]
+eig(A_ol)
