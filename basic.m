@@ -393,6 +393,7 @@ s = tf('s');
 syms B J c Kt w_eq R Lq phi_m n
 J = 2.2951e-5;
 B = 1.1475e-5;
+c = 7.5e-8;
 
 A_ol = [-(B+4*c*w_eq)/J Kt/J;
         -n*phi_m/Lq -R/Lq]
