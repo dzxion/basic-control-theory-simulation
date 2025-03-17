@@ -389,12 +389,17 @@ s = tf('s');
 % step(sys1,sys3,sys6)
 % legend
 
+% esc model
+syms B J c Kt w_eq R Lq phi_m n real
+syms Kp_i Ki_i Ki_v real
 % esc open-loop
-syms B J c Kt w_eq R Lq phi_m n
+% x1 = w - w_eq
+% x2 = iq - iq_eq
+
+% plant
 J = 2.2951e-5;
 B = 1.1475e-5;
 c = 7.5e-8;
-w_eq = 240;
 n = 7;
 P = 2*n;
 phi_m = 0.000487;
@@ -402,9 +407,42 @@ Kt = 3/4*P*phi_m;
 Lq = 19.0e-6;
 R = 0.12;
 
+% controller
+wc = 1000;
+Kp_i = wc*Lq;
+Ki_i = R/Lq;
+Ki_i = Kp_i*Ki_i;
+Ki_v = 500;
+
+% equilibrium point 
+w_eq = 240;
+i_eq = 0.8;
+v_eq = 0.95;
+i_int_eq = v_eq/Ki_i;
+v_int_eq = 0;
+
 A_ol = [-(B+2*c*w_eq)/J Kt/J;
         -n*phi_m/Lq -R/Lq]
 eig(A_ol)
+C_ol = [1 0];
+x0 = [-w_eq;-i_eq];
+sys_ol = ss(A_ol,[],C_ol,[]);
+figure
+initial(sys_ol,x0)
+hold on
 
 % esc close-loop
-% A_cl = [];
+% x1 = w - w_eq
+% x2 = iq - iq_eq
+% x3 = sigma_iq_delta = sigma_iq - sigma_iq_eq
+% x4 = sigma_vq_delta = sigma_vq - sigma_vq_eq
+
+A_cl = [-(B+2*c*w_eq)/J         Kt/J             0         0;
+        -(Kp_i/R+1)*n*phi_m/Lq -(R+Kp_i)/Lq -Ki_i/Lq -Kp_i*Ki_v/Lq;
+             n*phi_m/R            1              0         Ki_v;
+          -n*phi_m/R*Kp_i      -Kp_i           -Ki_i -Kp_i*Ki_v]
+eig(A_cl)
+C_cl = [1 0 0 0];
+x0 = [-w_eq;-i_eq;-i_int_eq;-v_int_eq];
+sys_cl = ss(A_cl,[],C_cl,[]);
+initial(sys_cl,x0)
