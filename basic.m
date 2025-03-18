@@ -219,6 +219,10 @@ s = tf('s');
 % % P_1*A_cl + A_cl'*P_1
 
 % cascade closed loop
+% x1 = w - w*
+% x2 = sigma_v - sigma_v*
+% x3 = i - i_ref
+% x4 = sigma_i - sigma_i*
 % A = [-(B+Km*Kp_v)/J -Km*Kp_v*Ki_v/J     Km/J          0;
 %            1          0                  0            0;
 %            0          0             (-R-Kp_i)/L -Kp_i*Ki_i/L;
@@ -432,10 +436,10 @@ initial(sys_ol,x0)
 hold on
 
 % esc close-loop
-% x1 = w - w_eq
-% x2 = iq - iq_eq
-% x3 = sigma_iq_delta = sigma_iq - sigma_iq_eq
-% x4 = sigma_vq_delta = sigma_vq - sigma_vq_eq
+% x1 = w - w*
+% x2 = iq - iq*
+% x3 = sigma_iq_delta = sigma_iq - sigma_iq*
+% x4 = sigma_vq_delta = sigma_vq - sigma_vq*
 
 A_cl = [-(B+2*c*w_eq)/J         Kt/J             0         0;
         -(Kp_i/R+1)*n*phi_m/Lq -(R+Kp_i)/Lq -Ki_i/Lq -Kp_i*Ki_v/Lq;
