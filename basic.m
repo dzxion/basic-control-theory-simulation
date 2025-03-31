@@ -425,15 +425,15 @@ v_eq = 0.95;
 i_int_eq = v_eq/Ki_i;
 v_int_eq = 0;
 
-A_ol = [-(B+2*c*w_eq)/J Kt/J;
-        -n*phi_m/Lq -R/Lq]
-eig(A_ol)
-C_ol = [1 0];
-x0 = [-w_eq;-i_eq];
-sys_ol = ss(A_ol,[],C_ol,[]);
-figure
-initial(sys_ol,x0)
-hold on
+% A_ol = [-(B+2*c*w_eq)/J Kt/J;
+%         -n*phi_m/Lq -R/Lq]
+% eig(A_ol)
+% C_ol = [1 0];
+% x0 = [-w_eq;-i_eq];
+% sys_ol = ss(A_ol,[],C_ol,[]);
+% figure
+% initial(sys_ol,x0)
+% hold on
 
 % esc close-loop
 % x1 = w - w*
@@ -446,7 +446,7 @@ A_cl = [-(B+2*c*w_eq)/J         Kt/J             0         0;
              n*phi_m/R            1              0         Ki_v;
           -n*phi_m/R*Kp_i      -Kp_i           -Ki_i -Kp_i*Ki_v]
 eig(A_cl)
-C_cl = [1 0 0 0];
-x0 = [-w_eq;-i_eq;-i_int_eq;-v_int_eq];
-sys_cl = ss(A_cl,[],C_cl,[]);
-initial(sys_cl,x0)
+% C_cl = [1 0 0 0];
+% x0 = [-w_eq;-i_eq;-i_int_eq;-v_int_eq];
+% sys_cl = ss(A_cl,[],C_cl,[]);
+% initial(sys_cl,x0)
