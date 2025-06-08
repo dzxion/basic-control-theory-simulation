@@ -294,6 +294,11 @@ s = tf('s');
 % legend
 % grid on
 
+% W = makeweight(1,[40 3.16],100);
+% W_inv = 1/W;
+% W_inv_tf = tf(W_inv)
+% bode(W_inv_tf)
+
 % getIOTransfer
 % G1 = tf(10,[1 10]);
 % G2 = tf([1 2],[1 0.2 10]);
@@ -394,59 +399,84 @@ s = tf('s');
 % legend
 
 % esc model
-syms B J c Kt w_eq R Lq phi_m n real
-syms Kp_i Ki_i Ki_v real
-% esc open-loop
-% x1 = w - w_eq
-% x2 = iq - iq_eq
+% syms B J c Kt w_eq R Lq phi_m n real
+% syms Kp_i Ki_i Ki_v real
+% % esc open-loop
+% % x1 = w - w_eq
+% % x2 = iq - iq_eq
+% 
+% % plant
+% J = 2.2951e-5;
+% B = 1.1475e-5;
+% c = 7.5e-8;
+% n = 7;
+% P = 2*n;
+% phi_m = 0.000487;
+% Kt = 3/4*P*phi_m;
+% Lq = 19.0e-6;
+% R = 0.12;
+% 
+% % controller
+% wc = 1000;
+% Kp_i = wc*Lq;
+% Ki_i = R/Lq;
+% Ki_i = Kp_i*Ki_i;
+% Ki_v = 500;
+% 
+% % equilibrium point 
+% w_eq = 240;
+% i_eq = 0.8;
+% v_eq = 0.95;
+% i_int_eq = v_eq/Ki_i;
+% v_int_eq = 0;
+% 
+% % A_ol = [-(B+2*c*w_eq)/J Kt/J;
+% %         -n*phi_m/Lq -R/Lq]
+% % eig(A_ol)
+% % C_ol = [1 0];
+% % x0 = [-w_eq;-i_eq];
+% % sys_ol = ss(A_ol,[],C_ol,[]);
+% % figure
+% % initial(sys_ol,x0)
+% % hold on
+% 
+% % esc close-loop
+% % x1 = w - w*
+% % x2 = iq - iq*
+% % x3 = sigma_iq_delta = sigma_iq - sigma_iq*
+% % x4 = sigma_vq_delta = sigma_vq - sigma_vq*
+% 
+% A_cl = [-(B+2*c*w_eq)/J         Kt/J             0         0;
+%         -(Kp_i/R+1)*n*phi_m/Lq -(R+Kp_i)/Lq -Ki_i/Lq -Kp_i*Ki_v/Lq;
+%              n*phi_m/R            1              0         Ki_v;
+%           -n*phi_m/R*Kp_i      -Kp_i           -Ki_i -Kp_i*Ki_v]
+% eig(A_cl)
+% % C_cl = [1 0 0 0];
+% % x0 = [-w_eq;-i_eq;-i_int_eq;-v_int_eq];
+% % sys_cl = ss(A_cl,[],C_cl,[]);
+% % initial(sys_cl,x0)
 
-% plant
-J = 2.2951e-5;
-B = 1.1475e-5;
-c = 7.5e-8;
-n = 7;
-P = 2*n;
-phi_m = 0.000487;
-Kt = 3/4*P*phi_m;
-Lq = 19.0e-6;
-R = 0.12;
+%% quadratic
+% syms A B P Q R u0 u1 real
+% expand([u0 u1]*[B 0;A*B B]'*[Q 0;0 P]*[B 0;A*B B]*[u0;u1])
+% H = [0.8170 0.3726;0.3726 0.2411]
+% expand([u0 u1]*H*[u0;u1])
+% [0 1]*[1 0;0 1]*[0;1]
 
-% controller
-wc = 1000;
-Kp_i = wc*Lq;
-Ki_i = R/Lq;
-Ki_i = Kp_i*Ki_i;
-Ki_v = 500;
+%% Riccati equations
+% A = [1 1;
+%      0 1];
+% B = [0;
+%      1];
+% Q = [1 0;
+%      0 1];
+% R = 0.01;
+% [X,L,G] = dare(A,B,Q,R)
 
-% equilibrium point 
-w_eq = 240;
-i_eq = 0.8;
-v_eq = 0.95;
-i_int_eq = v_eq/Ki_i;
-v_int_eq = 0;
-
-% A_ol = [-(B+2*c*w_eq)/J Kt/J;
-%         -n*phi_m/Lq -R/Lq]
-% eig(A_ol)
-% C_ol = [1 0];
-% x0 = [-w_eq;-i_eq];
-% sys_ol = ss(A_ol,[],C_ol,[]);
-% figure
-% initial(sys_ol,x0)
-% hold on
-
-% esc close-loop
-% x1 = w - w*
-% x2 = iq - iq*
-% x3 = sigma_iq_delta = sigma_iq - sigma_iq*
-% x4 = sigma_vq_delta = sigma_vq - sigma_vq*
-
-A_cl = [-(B+2*c*w_eq)/J         Kt/J             0         0;
-        -(Kp_i/R+1)*n*phi_m/Lq -(R+Kp_i)/Lq -Ki_i/Lq -Kp_i*Ki_v/Lq;
-             n*phi_m/R            1              0         Ki_v;
-          -n*phi_m/R*Kp_i      -Kp_i           -Ki_i -Kp_i*Ki_v]
-eig(A_cl)
-% C_cl = [1 0 0 0];
-% x0 = [-w_eq;-i_eq;-i_int_eq;-v_int_eq];
-% sys_cl = ss(A_cl,[],C_cl,[]);
-% initial(sys_cl,x0)
+%% ode
+tspan = [0 2];
+k = 1;
+x_init = 1;
+alpha = 0.1;
+[t1,x1] = ode45(@(t,x) -k*x,tspan,x_init);
+[t2,x2] = ode45(@(t,x) -k*sign(x)*(abs(x))^alpha,tspan,x_init);
