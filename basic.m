@@ -474,9 +474,14 @@ s = tf('s');
 % [X,L,G] = dare(A,B,Q,R)
 
 %% ode
-tspan = [0 2];
-k = 1;
-x_init = 1;
-alpha = 0.1;
-[t1,x1] = ode45(@(t,x) -k*x,tspan,x_init);
-[t2,x2] = ode45(@(t,x) -k*sign(x)*(abs(x))^alpha,tspan,x_init);
+% tspan = [0 10];
+% k = 1;
+% x_init = 10;
+% alpha = 0.1;
+% [t1,x1] = ode45(@(t,x) -k*x,tspan,x_init);
+% [t2,x2] = ode45(@(t,x) -k*sign(x)*(abs(x))^alpha,tspan,x_init);
+
+%% matlabFunction
+syms x y z
+r = x + y/2 + z/3;
+matlabFunction(r,"File","myfile","Vars",[y z x]);
