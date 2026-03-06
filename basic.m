@@ -252,18 +252,17 @@ s = tf('s');
 % bode(W1_inv)
 
 % bode
-% G1 = 30*s^0;
-% G2 = s+1;
-% G3 = 1/((s+0.01)^2);
-% G4 = 1/(s+10);
-% G5 = G1*G2*G3*G4;
-% bode(G1,G2,G3,G4,G5)
-% legend("G1","G2","G3","G4","G5")
-
-% G1 = 1/(s+1);
-% G2 = 1/(s+10);
-% bode(G1,G2)
-% legend("G1","G2")
+kp = 10;
+ki = 1;
+D_LP = 50;
+kd = 1;
+P = kp*s^0;
+I = ki/s;
+D = D_LP*kd*s/(s+2*pi*D_LP);
+PI = P+I;
+PID = P+I+D;
+bode(P,I,D,PI,PID)
+legend
 
 % M = 1.5;
 % wb = 10;
@@ -482,6 +481,24 @@ s = tf('s');
 % [t2,x2] = ode45(@(t,x) -k*sign(x)*(abs(x))^alpha,tspan,x_init);
 
 %% matlabFunction
-syms x y z
-r = x + y/2 + z/3;
-matlabFunction(r,"File","myfile","Vars",[y z x]);
+% syms x y z
+% r = x + y/2 + z/3;
+% matlabFunction(r,"File","myfile","Vars",[y z x]);
+
+%% nyquist
+% q = 0;
+% k = 1;
+% H = k/((s+q)*(s+1));
+% figure
+% nyquist(H)
+% hold on
+% k = 20;
+% H1 = k/((s+q)*(s+1));
+% nyquist(H1)
+% figure
+% % bode(H)
+% % hold on
+% % bode(H1)
+% margin(H)
+% figure
+% margin(H1)
