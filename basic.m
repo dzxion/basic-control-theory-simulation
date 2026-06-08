@@ -251,17 +251,28 @@ s = tf('s');
 % W1_inv = 1/W1;
 % bode(W1_inv)
 
-% bode
-kp = 10;
-ki = 1;
-D_LP = 50;
-kd = 1;
-P = kp*s^0;
-I = ki/s;
-D = D_LP*kd*s/(s+2*pi*D_LP);
-PI = P+I;
-PID = P+I+D;
-bode(P,I,D,PI,PID)
+%% bode
+% plant
+% P = 175/s;
+% 
+% kp = 0.15;
+% ki = 0.02;
+% D_LP = 20;
+% kd = 0.002;
+% C_P = kp*s^0;
+% C_I = ki/s;
+% C_D = 2*pi*D_LP*kd*s/(s+2*pi*D_LP);
+% C_PI = C_P + C_I;
+% C_PID = C_P+C_I+C_D;
+% % bode(C_P,C_I,C_D,C_PI,C_PID)
+% L = C_PID*P
+
+opt = bodeoptions;
+opt.FreqUnits = 'Hz';
+wc = 100;
+wh = 5*wc;
+L = wc/s * 1/(1+s/wc)*1/(1+s/wh);
+margin(L,opt)
 legend
 
 % M = 1.5;
