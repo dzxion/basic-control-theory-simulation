@@ -267,13 +267,20 @@ s = tf('s');
 % % bode(C_P,C_I,C_D,C_PI,C_PID)
 % L = C_PID*P
 
-opt = bodeoptions;
-opt.FreqUnits = 'Hz';
-wc = 100;
-wh = 5*wc;
-L = wc/s * 1/(1+s/wc)*1/(1+s/wh);
-margin(L,opt)
-legend
+% opt = bodeoptions;
+% opt.FreqUnits = 'Hz';
+% wc = 100;
+% wh = 5*wc;
+% L1 = wc/s;
+% L2 = wc/s * 1/(1+s/wc);
+% L3 = wc/s * 1/(1+s/wc)*1/(1+s/wh);
+% bode(L1,L2,L3,opt)
+% % hold on
+% % margin(L2,opt)
+% legend
+
+G = tf(1.5,[1 14 40.02]);
+controlSystemDesigner("bode",G);
 
 % M = 1.5;
 % wb = 10;
