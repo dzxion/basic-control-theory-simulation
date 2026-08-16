@@ -164,77 +164,6 @@ s = tf('s');
 % sys = ss(A,B,C,D);
 % [K,S,P] = lqr(sys,Q,R)
 
-%% 参考khalil 12.4 Integral Control via Linearization
-% 直接套公式即可
-% J = 2.2951e-5;
-% B = 1.1475e-5;
-% Kp_v = 0.35;
-% Ki_v = 140;
-% Ki_v = Kp_v*Ki_v;
-% P = 14;% number of pole
-% phi_m = 0.00469;
-% Km = 3*P/4 *phi_m;
-% L = 2.39e-3;
-% R = 5.2;
-% wc = 130;
-% Kp_i = wc*L;
-% Ki_i = R/L;
-% Ki_i = Kp_i*Ki_i;
-
-% current closed loop
-% syms R L w
-% A = [-R/L 0;1 0];
-% B = [1/L;0];
-% K1 = w*L;
-% K2 = K1*R/L;
-% K = [K1 K2];
-% A_cl = A - B*K
-% eig(A_cl)
-
-% velocity closed loop
-% syms B J Km real
-% syms Kp Ki real
-% syms K1 K2 real
-% 
-% 
-% K1 = Kp;
-% K2 = Kp*Ki;
-% 
-% A = [-B/J 0;1 0];
-% B = [Km/J;0];
-% K = [K1 K2];
-% A_cl = A - B*K
-% eig(A_cl)
-% 
-% % Q = eye(2)
-% % syms p11 p12 p21 p22
-% % X = [p11 p12;p21 p22];
-% % 
-% % eqn = X*A_cl + A_cl'*X == -Q
-% % S = solve(eqn,X)
-% % 
-% % P_1 = [S.p11 S.p12;S.p21 S.p22]
-% % 
-% % % eig(P_1)
-% % P_1*A_cl + A_cl'*P_1
-
-% cascade closed loop
-% x1 = w - w*
-% x2 = sigma_v - sigma_v*
-% x3 = i - i_ref
-% x4 = sigma_i - sigma_i*
-% A = [-(B+Km*Kp_v)/J -Km*Kp_v*Ki_v/J     Km/J          0;
-%            1          0                  0            0;
-%            0          0             (-R-Kp_i)/L -Kp_i*Ki_i/L;
-%            0          0                  1            0];
-% eig(A)
-
-% A = [-(B+Km*Kp_v)/J                      -Km*Ki_v/J                 Km/J              0;
-%            1                               0                         0                0;
-%      Kp_v*R/L-Kp_v*(B+Km*Kp_v)/J+Ki_v  Ki_v*R/L-Km*Ki_v*Kp_v/J (-R-Kp_i)/L+Km*Kp_v/J -Ki_i/L;
-%            0                               0                         1                0];
-% eig(A)
-
 % mixsyn
 % G = (s-1)/(s+1)^2;
 % W1 = makeweight(10,[1 0.1],0.01);
@@ -252,32 +181,18 @@ s = tf('s');
 % bode(W1_inv)
 
 % bode
-% G1 = 30*s^0;
-% G2 = s+1;
-% G3 = 1/((s+0.01)^2);
-% G4 = 1/(s+10);
-% G5 = G1*G2*G3*G4;
-% bode(G1,G2,G3,G4,G5)
-% legend("G1","G2","G3","G4","G5")
-
-% G1 = 1/(s+1);
-% G2 = 1/(s+10);
-% bode(G1,G2)
-% legend("G1","G2")
-
-% M = 1.5;
-% wb = 10;
-% A = 1.e-4;
-% 
-% Wp1 = (s/M+wb)/(s+wb*A);
-% Wp1_inv = 1/Wp1;
-% 
-% Wp2 = (s/M^0.5+wb)^2/(s+wb*A^0.5)^2;
-% Wp2_inv = 1/Wp2;
-% 
-% bode(Wp1_inv,Wp2_inv)
-% legend("Wp1^{-1}","Wp2^{-1}")
-
+% H = 1/s;
+% H1 = 1/(s+1);
+% H2 = 1*s^0;
+% H3 = 1+1/s;
+% H4 = (10*s+1)/(s+1)
+% % bode(H,H1)
+% figure
+% bode(H,H2,H3)
+% legend
+% figure
+% margin(H4)
+    
 % Weighting function
 % Wl = makeweight(100,[1,3.16],0.1);
 % Wh = makeweight(0.316,10,100);
@@ -398,64 +313,6 @@ s = tf('s');
 % step(sys1,sys3,sys6)
 % legend
 
-% esc model
-% syms B J c Kt w_eq R Lq phi_m n real
-% syms Kp_i Ki_i Ki_v real
-% % esc open-loop
-% % x1 = w - w_eq
-% % x2 = iq - iq_eq
-% 
-% % plant
-% J = 2.2951e-5;
-% B = 1.1475e-5;
-% c = 7.5e-8;
-% n = 7;
-% P = 2*n;
-% phi_m = 0.000487;
-% Kt = 3/4*P*phi_m;
-% Lq = 19.0e-6;
-% R = 0.12;
-% 
-% % controller
-% wc = 1000;
-% Kp_i = wc*Lq;
-% Ki_i = R/Lq;
-% Ki_i = Kp_i*Ki_i;
-% Ki_v = 500;
-% 
-% % equilibrium point 
-% w_eq = 240;
-% i_eq = 0.8;
-% v_eq = 0.95;
-% i_int_eq = v_eq/Ki_i;
-% v_int_eq = 0;
-% 
-% % A_ol = [-(B+2*c*w_eq)/J Kt/J;
-% %         -n*phi_m/Lq -R/Lq]
-% % eig(A_ol)
-% % C_ol = [1 0];
-% % x0 = [-w_eq;-i_eq];
-% % sys_ol = ss(A_ol,[],C_ol,[]);
-% % figure
-% % initial(sys_ol,x0)
-% % hold on
-% 
-% % esc close-loop
-% % x1 = w - w*
-% % x2 = iq - iq*
-% % x3 = sigma_iq_delta = sigma_iq - sigma_iq*
-% % x4 = sigma_vq_delta = sigma_vq - sigma_vq*
-% 
-% A_cl = [-(B+2*c*w_eq)/J         Kt/J             0         0;
-%         -(Kp_i/R+1)*n*phi_m/Lq -(R+Kp_i)/Lq -Ki_i/Lq -Kp_i*Ki_v/Lq;
-%              n*phi_m/R            1              0         Ki_v;
-%           -n*phi_m/R*Kp_i      -Kp_i           -Ki_i -Kp_i*Ki_v]
-% eig(A_cl)
-% % C_cl = [1 0 0 0];
-% % x0 = [-w_eq;-i_eq;-i_int_eq;-v_int_eq];
-% % sys_cl = ss(A_cl,[],C_cl,[]);
-% % initial(sys_cl,x0)
-
 %% quadratic
 % syms A B P Q R u0 u1 real
 % expand([u0 u1]*[B 0;A*B B]'*[Q 0;0 P]*[B 0;A*B B]*[u0;u1])
@@ -482,6 +339,35 @@ s = tf('s');
 % [t2,x2] = ode45(@(t,x) -k*sign(x)*(abs(x))^alpha,tspan,x_init);
 
 %% matlabFunction
-syms x y z
-r = x + y/2 + z/3;
-matlabFunction(r,"File","myfile","Vars",[y z x]);
+% syms x y z
+% r = x + y/2 + z/3;
+% matlabFunction(r,"File","myfile","Vars",[y z x]);
+
+% A = [zeros(3),eye(3);
+%     zeros(3),zeros(3);]
+% eig(A)
+
+%% nyquist
+% H = 1/((s+1))^2;
+% nyquist(H)
+
+%% lead lag boost
+opt = bodeoptions;
+opt.FreqUnits = 'Hz';
+opt.Grid = 'on';
+
+gain = 10;
+fi = 0.5;
+comp_fc = 2;
+comp_gain = 5;
+PI = (gain*s+2*pi*fi)/s;
+PI1 = (gain*s+2*pi*fi*10)/s;
+figure
+bode(PI,PI1,opt);
+lead = (gain*s+2*pi*fi)/s * (s/(2*pi*comp_fc)+1)/(s/(2*pi*comp_fc*comp_gain)+1);
+lag = (gain*s+2*pi*fi)/s * (s/(2*pi*comp_fc*comp_gain)+1)/(s/(2*pi*comp_fc)+1);
+boost = (gain*s+2*pi*fi)/s * comp_gain*(s/(2*pi*comp_fc*comp_gain)+1)/(s/(2*pi*comp_fc)+1);
+sys1 = (10*gain*s+2*pi*fi)/s;
+figure
+bode(PI,lead,lag,boost,sys1,opt);
+legend('PI','lead','lag','boost','sys1');
