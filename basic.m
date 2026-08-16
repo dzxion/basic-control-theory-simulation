@@ -180,7 +180,6 @@ s = tf('s');
 % W1_inv = 1/W1;
 % bode(W1_inv)
 
-<<<<<<< HEAD
 % bode
 % H = 1/s;
 % H1 = 1/(s+1);
@@ -194,52 +193,6 @@ s = tf('s');
 % figure
 % margin(H4)
     
-=======
-%% bode
-% plant
-% P = 175/s;
-% 
-% kp = 0.15;
-% ki = 0.02;
-% D_LP = 20;
-% kd = 0.002;
-% C_P = kp*s^0;
-% C_I = ki/s;
-% C_D = 2*pi*D_LP*kd*s/(s+2*pi*D_LP);
-% C_PI = C_P + C_I;
-% C_PID = C_P+C_I+C_D;
-% % bode(C_P,C_I,C_D,C_PI,C_PID)
-% L = C_PID*P
-
-% opt = bodeoptions;
-% opt.FreqUnits = 'Hz';
-% wc = 100;
-% wh = 5*wc;
-% L1 = wc/s;
-% L2 = wc/s * 1/(1+s/wc);
-% L3 = wc/s * 1/(1+s/wc)*1/(1+s/wh);
-% bode(L1,L2,L3,opt)
-% % hold on
-% % margin(L2,opt)
-% legend
-
-G = tf(1.5,[1 14 40.02]);
-controlSystemDesigner("bode",G);
-
-% M = 1.5;
-% wb = 10;
-% A = 1.e-4;
-% 
-% Wp1 = (s/M+wb)/(s+wb*A);
-% Wp1_inv = 1/Wp1;
-% 
-% Wp2 = (s/M^0.5+wb)^2/(s+wb*A^0.5)^2;
-% Wp2_inv = 1/Wp2;
-% 
-% bode(Wp1_inv,Wp2_inv)
-% legend("Wp1^{-1}","Wp2^{-1}")
-
->>>>>>> b5e762c745e70b6f994bfe5c79d36e089b49b10b
 % Weighting function
 % Wl = makeweight(100,[1,3.16],0.1);
 % Wh = makeweight(0.316,10,100);
@@ -390,7 +343,6 @@ controlSystemDesigner("bode",G);
 % r = x + y/2 + z/3;
 % matlabFunction(r,"File","myfile","Vars",[y z x]);
 
-<<<<<<< HEAD
 % A = [zeros(3),eye(3);
 %     zeros(3),zeros(3);]
 % eig(A)
@@ -419,22 +371,3 @@ sys1 = (10*gain*s+2*pi*fi)/s;
 figure
 bode(PI,lead,lag,boost,sys1,opt);
 legend('PI','lead','lag','boost','sys1');
-=======
-%% nyquist
-% q = 0;
-% k = 1;
-% H = k/((s+q)*(s+1));
-% figure
-% nyquist(H)
-% hold on
-% k = 20;
-% H1 = k/((s+q)*(s+1));
-% nyquist(H1)
-% figure
-% % bode(H)
-% % hold on
-% % bode(H1)
-% margin(H)
-% figure
-% margin(H1)
->>>>>>> b5e762c745e70b6f994bfe5c79d36e089b49b10b
